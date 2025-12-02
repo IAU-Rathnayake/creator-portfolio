@@ -352,3 +352,178 @@ function initThemeSwitcher() {
 */
 
 console.log('Portfolio website initialized successfully!');
+// WhatsApp Contact Functionality
+function initWhatsAppContact() {
+  // Your WhatsApp number (replace with your actual number)
+  const whatsappNumber = "+94764638787"; // Example: "94771234567"
+  
+  // Default message (customize as needed)
+  const defaultMessage = "Hello! I'm interested in your design services. Let's chat!";
+  
+  // Get elements
+  const whatsappFloat = document.getElementById('whatsappFloat');
+  const whatsappLink = document.getElementById('whatsappLink');
+  
+  // Create modal for better UX (optional)
+  createWhatsAppModal();
+  
+  // Format number for display (add spaces for readability)
+  function formatPhoneNumber(phoneNumber) {
+    // Remove all non-numeric characters
+    const cleaned = phoneNumber.toString().replace(/\D/g, '');
+    
+    // Format based on length
+    if (cleaned.length <= 10) {
+      return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
+    } else {
+      return cleaned.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '+$1 $2 $3 $4');
+    }
+  }
+  
+  // Encode message for URL
+  function encodeMessage(message) {
+    return encodeURIComponent(message);
+  }
+  
+  // Generate WhatsApp URL
+  function getWhatsAppURL(number, message) {
+    // Remove all non-numeric characters from number
+    const cleanNumber = number.toString().replace(/\D/g, '');
+    
+    // Create WhatsApp URL
+    return `https://wa.me/${cleanNumber}?text=${encodeMessage(message)}`;
+  }
+  
+  // Create optional modal for confirmation
+  function createWhatsAppModal() {
+    // Create modal HTML
+    const modalHTML = `
+      <div class="whatsapp-modal" id="whatsappModal">
+        <button class="whatsapp-close" id="whatsappClose">
+          <i class="fas fa-times"></i>
+        </button>
+        <div class="whatsapp-modal-content">
+          <div class="whatsapp-modal-header">
+            <div class="whatsapp-modal-icon">
+              <i class="fab fa-whatsapp"></i>
+            </div>
+            <h3>Contact on WhatsApp</h3>
+          </div>
+          <div class="whatsapp-modal-body">
+            <p>You'll be redirected to WhatsApp to start a conversation. Make sure you have WhatsApp installed on your device.</p>
+            <div class="whatsapp-number-display">
+              <div class="number">${formatPhoneNumber(whatsappNumber)}</div>
+            </div>
+            <p>You can edit the message before sending if needed.</p>
+          </div>
+          <div class="whatsapp-modal-actions">
+            <button class="modal-btn modal-btn-primary" id="whatsappConfirm">
+              <i class="fab fa-whatsapp"></i> Open WhatsApp
+            </button>
+            <button class="modal-btn modal-btn-secondary" id="whatsappCancel">
+              Cancel
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+    
+    // Add modal to body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+    
+    // Get modal elements
+    const whatsappModal = document.getElementById('whatsappModal');
+    const whatsappClose = document.getElementById('whatsappClose');
+    const whatsappConfirm = document.getElementById('whatsappConfirm');
+    const whatsappCancel = document.getElementById('whatsappCancel');
+    
+    // Show modal function
+    function showModal() {
+      whatsappModal.classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+    
+    // Hide modal function
+    function hideModal() {
+      whatsappModal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+    
+    // Direct WhatsApp redirect
+    function redirectToWhatsApp() {
+      const url = getWhatsAppURL(whatsappNumber, defaultMessage);
+      window.open(url, '_blank');
+      hideModal();
+    }
+    
+    // Event listeners for modal
+    if (whatsappClose) {
+      whatsappClose.addEventListener('click', hideModal);
+    }
+    
+    if (whatsappCancel) {
+      whatsappCancel.addEventListener('click', hideModal);
+    }
+    
+    if (whatsappConfirm) {
+      whatsappConfirm.addEventListener('click', redirectToWhatsApp);
+    }
+    
+    // Close modal when clicking outside
+    whatsappModal.addEventListener('click', (e) => {
+      if (e.target === whatsappModal) {
+        hideModal();
+      }
+    });
+    
+    // Set initial WhatsApp link (direct action)
+    whatsappLink.href = getWhatsAppURL(whatsappNumber, defaultMessage);
+    
+    // Optional: Add click event for modal confirmation (comment out if you want direct redirect)
+    whatsappLink.addEventListener('click', (e) => {
+      e.preventDefault();
+      showModal();
+    });
+    
+    // Alternative: Uncomment below for direct redirect without modal
+    /*
+    whatsappLink.href = getWhatsAppURL(whatsappNumber, defaultMessage);
+    whatsappLink.addEventListener('click', (e) => {
+      // Let the default link action happen
+    });
+    */
+  }
+  
+  // Add pulse animation on page load
+  setTimeout(() => {
+    const button = whatsappFloat.querySelector('.whatsapp-button');
+    button.classList.add('pulse');
+    
+    // Remove pulse after 3 cycles
+    setTimeout(() => {
+      button.classList.remove('pulse');
+    }, 6000);
+  }, 2000);
+  
+  // Re-add pulse animation when scrolling to bottom (contact section)
+  window.addEventListener('scroll', () => {
+    const contactSection = document.getElementById('contact');
+    if (contactSection) {
+      const rect = contactSection.getBoundingClientRect();
+      if (rect.top < window.innerHeight && rect.bottom >= 0) {
+        const button = whatsappFloat.querySelector('.whatsapp-button');
+        if (!button.classList.contains('pulse')) {
+          button.classList.add('pulse');
+          setTimeout(() => {
+            button.classList.remove('pulse');
+          }, 6000);
+        }
+      }
+    }
+  });
+  
+  console.log('WhatsApp contact initialized. Number:', whatsappNumber);
+}
+
+// Initialize WhatsApp contact when page loads
+document.addEventListener('DOMContentLoaded', initWhatsAppContact);
