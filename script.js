@@ -527,3 +527,77 @@ function initWhatsAppContact() {
 
 // Initialize WhatsApp contact when page loads
 document.addEventListener('DOMContentLoaded', initWhatsAppContact);
+
+
+// CV Download Function - Updated for ML Engineer
+function downloadCV() {
+  const cvUrl = 'imesh_rathnayake_ml_engineer_cv.pdf';
+  
+  // You can use a placeholder or actual CV
+  const userConfirmed = confirm(
+    'Would you like to download my CV?\n\n' +
+    'The CV includes:\n' +
+    '• Machine Learning Projects\n' +
+    '• Technical Skills\n' +
+    '• Certifications\n' +
+    '• Education & Experience'
+  );
+  
+  if (!userConfirmed) return;
+  
+  // Create a demo CV download
+  const demoCV = `
+    Imesh Rathnayake - Machine Learning Engineer
+    ===========================================
+    
+    EDUCATION
+    ---------
+    Bachelor of Science in Computer Science
+    NSBM Green University (2022-2026)
+    Specialization: Machine Learning & Data Science
+    
+    TECHNICAL SKILLS
+    ----------------
+    • Machine Learning: Scikit-learn, TensorFlow, Deep Learning
+    • Programming: Python, SQL, Git, Linux
+    • Data Science: Pandas, NumPy, Matplotlib, Data Analysis
+    • Cybersecurity: Network Security, Cryptography
+    
+    CERTIFICATIONS
+    --------------
+    • Building Systems with ChatGPT API - DeepLearning.AI
+    • Calculus for Machine Learning - DeepLearning.AI
+    • Introduction to Cybersecurity - Harvard University
+    • Foundations of Cybersecurity - Google
+    
+    EXPERIENCE
+    ----------
+    Associate IT Executive
+    eBEYONDS Pvt Ltd (2021-2022)
+    • IT Support and System Administration
+    
+    PROJECTS
+    --------
+    California Housing Price Prediction
+    • End-to-end ML pipeline with regression models
+    • Feature engineering and hyperparameter tuning
+    
+    CONTACT
+    -------
+    Email: imeshrathnayake@hotmail.com
+    LinkedIn: linkedin.com/in/imesh-rathnayake
+    GitHub: github.com/yourusername
+  `;
+  
+  const blob = new Blob([demoCV], { type: 'application/pdf' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'Imesh_Rathnayake_ML_Engineer_CV.pdf';
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// ... (rest of the existing JavaScript remains the same)
