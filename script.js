@@ -118,48 +118,6 @@ if (contactForm) {
   });
 }
 
-// CV Download Function
-function downloadCV() {
-  const cvUrl = 'cv_placeholder.pdf';
-  if (cvUrl === 'cv_placeholder.pdf') {
-    const userConfirmed = confirm(
-      'This is a placeholder link. To set up your CV download:\n\n' +
-      '1. Rename your CV file to "cv.pdf"\n' +
-      '2. Place it in the same folder as this website\n\n' +
-      'Would you like to continue with the demo?'
-    );
-    
-    if (!userConfirmed) return;
-    
-    // Create a demo CV download
-    const demoCV = `
-      Name: Imesh Rathnayake
-      Title: Motion & Digital Media Designer
-      Email: hello@imeshrathnayake.com
-      Portfolio: imeshrathnayake.com
-      
-      This is a demo CV. Please replace with your actual CV file.
-    `;
-    
-    const blob = new Blob([demoCV], { type: 'application/pdf' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'Imesh_Rathnayake_CV.pdf';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
-  } else {
-    const a = document.createElement('a');
-    a.href = cvUrl;
-    a.download = 'Imesh_Rathnayake_CV.pdf';
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-  }
-}
-
 // Scroll Animations
 const observerOptions = {
   threshold: 0.1,
@@ -355,7 +313,7 @@ console.log('Portfolio website initialized successfully!');
 // WhatsApp Contact Functionality
 function initWhatsAppContact() {
   // Your WhatsApp number
-  const whatsappNumber = "+94764638787";
+  const whatsappNumber = "+94764102001";
   
   // Default message
   const defaultMessage = "Hi Imesh, I saw your portfolio and would like to connect!";
