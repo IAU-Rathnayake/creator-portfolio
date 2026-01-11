@@ -354,30 +354,28 @@ function initThemeSwitcher() {
 console.log('Portfolio website initialized successfully!');
 // WhatsApp Contact Functionality
 function initWhatsAppContact() {
-  // Your WhatsApp number (replace with your actual number)
-  const whatsappNumber = "+94764638787"; // Example: "94771234567"
+  // Your WhatsApp number
+  const whatsappNumber = "+94764638787";
   
-  // Default message (customize as needed)
-  const defaultMessage = "Hello! I'm interested in your design services. Let's chat!";
+  // Default message
+  const defaultMessage = "Hi Imesh, I saw your portfolio and would like to connect!";
   
   // Get elements
   const whatsappFloat = document.getElementById('whatsappFloat');
   const whatsappLink = document.getElementById('whatsappLink');
   
-  // Create modal for better UX (optional)
-  createWhatsAppModal();
-  
-  // Format number for display (add spaces for readability)
+  // Format phone number for display
   function formatPhoneNumber(phoneNumber) {
     // Remove all non-numeric characters
     const cleaned = phoneNumber.toString().replace(/\D/g, '');
     
-    // Format based on length
-    if (cleaned.length <= 10) {
-      return cleaned.replace(/(\d{3})(\d{3})(\d{4})/, '$1 $2 $3');
-    } else {
-      return cleaned.replace(/(\d{2})(\d{3})(\d{3})(\d{4})/, '+$1 $2 $3 $4');
+    // Format Sri Lankan number: 94 76 463 8787
+    if (cleaned.length === 11 && cleaned.startsWith('94')) {
+      return `+${cleaned.slice(0, 2)} ${cleaned.slice(2, 4)} ${cleaned.slice(4, 7)} ${cleaned.slice(7)}`;
     }
+    
+    // Default formatting
+    return cleaned;
   }
   
   // Encode message for URL
@@ -394,15 +392,16 @@ function initWhatsAppContact() {
     return `https://wa.me/${cleanNumber}?text=${encodeMessage(message)}`;
   }
   
-  // Create optional modal for confirmation
+  // Create modal for confirmation
   function createWhatsAppModal() {
     // Create modal HTML
     const modalHTML = `
-      <div class="whatsapp-modal" id="whatsappModal">
-        <button class="whatsapp-close" id="whatsappClose">
-          <i class="fas fa-times"></i>
-        </button>
+      <div class="whatsapp-modal" id="whatsappModal" style="display: none;">
+        <div class="whatsapp-modal-overlay"></div>
         <div class="whatsapp-modal-content">
+          <button class="whatsapp-close" id="whatsappClose">
+            <i class="fas fa-times"></i>
+          </button>
           <div class="whatsapp-modal-header">
             <div class="whatsapp-modal-icon">
               <i class="fab fa-whatsapp"></i>
@@ -412,9 +411,14 @@ function initWhatsAppContact() {
           <div class="whatsapp-modal-body">
             <p>You'll be redirected to WhatsApp to start a conversation. Make sure you have WhatsApp installed on your device.</p>
             <div class="whatsapp-number-display">
+              <strong>Phone:</strong>
               <div class="number">${formatPhoneNumber(whatsappNumber)}</div>
             </div>
-            <p>You can edit the message before sending if needed.</p>
+            <div class="whatsapp-message-preview">
+              <strong>Message:</strong>
+              <div class="message">"${defaultMessage}"</div>
+            </div>
+            <p class="whatsapp-note">You can edit the message before sending if needed.</p>
           </div>
           <div class="whatsapp-modal-actions">
             <button class="modal-btn modal-btn-primary" id="whatsappConfirm">
@@ -439,13 +443,19 @@ function initWhatsAppContact() {
     
     // Show modal function
     function showModal() {
-      whatsappModal.classList.add('active');
+      whatsappModal.style.display = 'block';
+      setTimeout(() => {
+        whatsappModal.classList.add('active');
+      }, 10);
       document.body.style.overflow = 'hidden';
     }
     
     // Hide modal function
     function hideModal() {
       whatsappModal.classList.remove('active');
+      setTimeout(() => {
+        whatsappModal.style.display = 'none';
+      }, 300);
       document.body.style.overflow = '';
     }
     
@@ -471,28 +481,23 @@ function initWhatsAppContact() {
     
     // Close modal when clicking outside
     whatsappModal.addEventListener('click', (e) => {
-      if (e.target === whatsappModal) {
+      if (e.target.classList.contains('whatsapp-modal-overlay')) {
         hideModal();
       }
     });
     
-    // Set initial WhatsApp link (direct action)
-    whatsappLink.href = getWhatsAppURL(whatsappNumber, defaultMessage);
+    // Set initial WhatsApp link
+    whatsappLink.href = '#';
     
-    // Optional: Add click event for modal confirmation (comment out if you want direct redirect)
+    // Add click event for modal confirmation
     whatsappLink.addEventListener('click', (e) => {
       e.preventDefault();
       showModal();
     });
-    
-    // Alternative: Uncomment below for direct redirect without modal
-    /*
-    whatsappLink.href = getWhatsAppURL(whatsappNumber, defaultMessage);
-    whatsappLink.addEventListener('click', (e) => {
-      // Let the default link action happen
-    });
-    */
   }
+  
+  // Create the modal
+  createWhatsAppModal();
   
   // Add pulse animation on page load
   setTimeout(() => {
@@ -525,79 +530,174 @@ function initWhatsAppContact() {
   console.log('WhatsApp contact initialized. Number:', whatsappNumber);
 }
 
-// Initialize WhatsApp contact when page loads
-document.addEventListener('DOMContentLoaded', initWhatsAppContact);
+
+function fixFooterName() {
+  const footerText = document.querySelector('.footer-bottom p');
+  if (footerText) {
+    footerText.innerHTML = footerText.innerHTML.replace('Inesh Rathnavake', 'Imesh Rathnayake');
+  }
+}
+
+// Initialize everything when page loads
+document.addEventListener('DOMContentLoaded', function() {
+  initWhatsAppContact();
+  fixFooterName();
+  // Set current year in footer
+  document.getElementById('currentYear').textContent = new Date().getFullYear();
+});
 
 
-// CV Download Function - Updated for ML Engineer
+// CV Download Function
 function downloadCV() {
-  const cvUrl = 'imesh_rathnayake_ml_engineer_cv.pdf';
   
-  // You can use a placeholder or actual CV
+  const cvUrl = 'assets/Imesh_Rathnayake_ML_Resume.pdf'; 
+  
+  // Ask for confirmation
   const userConfirmed = confirm(
     'Would you like to download my CV?\n\n' +
     'The CV includes:\n' +
     '• Machine Learning Projects\n' +
     '• Technical Skills\n' +
     '• Certifications\n' +
-    '• Education & Experience'
+    '• Education & Experience\n' +
+    '• Contact Information'
   );
   
   if (!userConfirmed) return;
   
-  // Create a demo CV download
-  const demoCV = `
-    Imesh Rathnayake - Machine Learning Engineer
-    ===========================================
-    
-    EDUCATION
-    ---------
-    Bachelor of Science in Computer Science
-    NSBM Green University (2022-2026)
-    Specialization: Machine Learning & Data Science
-    
-    TECHNICAL SKILLS
-    ----------------
-    • Machine Learning: Scikit-learn, TensorFlow, Deep Learning
-    • Programming: Python, SQL, Git, Linux
-    • Data Science: Pandas, NumPy, Matplotlib, Data Analysis
-    • Cybersecurity: Network Security, Cryptography
-    
-    CERTIFICATIONS
-    --------------
-    • Building Systems with ChatGPT API - DeepLearning.AI
-    • Calculus for Machine Learning - DeepLearning.AI
-    • Introduction to Cybersecurity - Harvard University
-    • Foundations of Cybersecurity - Google
-    
-    EXPERIENCE
-    ----------
-    Associate IT Executive
-    eBEYONDS Pvt Ltd (2021-2022)
-    • IT Support and System Administration
-    
-    PROJECTS
-    --------
-    California Housing Price Prediction
-    • End-to-end ML pipeline with regression models
-    • Feature engineering and hyperparameter tuning
-    
-    CONTACT
-    -------
-    Email: imeshrathnayake@hotmail.com
-    LinkedIn: linkedin.com/in/imesh-rathnayake
-    GitHub: github.com/yourusername
-  `;
+  // Create a link element and trigger download
+  const link = document.createElement('a');
+  link.href = cvUrl;
+  link.download = 'Imesh_Rathnayake_ML_Engineer_CV.pdf';
+  link.target = '_blank'; // Open in new tab for safety
   
-  const blob = new Blob([demoCV], { type: 'application/pdf' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'Imesh_Rathnayake_ML_Engineer_CV.pdf';
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
+  // Append to body, click, and remove
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  
+  // Show download success message
+  showDownloadSuccess();
 }
 
-// ... (rest of the existing JavaScript remains the same)
+// Success notification
+function showDownloadSuccess() {
+  // Create a toast notification
+  const toast = document.createElement('div');
+  toast.className = 'download-toast';
+  toast.innerHTML = `
+    <i class="fas fa-check-circle"></i>
+    <span>CV download started! Check your downloads folder.</span>
+  `;
+  
+  // Adding styles 
+  toast.style.cssText = `
+    position: fixed;
+    bottom: 100px;
+    right: 25px;
+    background: #4CAF50;
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    z-index: 10000;
+    animation: slideIn 0.3s ease;
+  `;
+  
+  // Adding animation keyframes
+  const style = document.createElement('style');
+  style.textContent = `
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+    @keyframes slideOut {
+      from { transform: translateX(0); opacity: 1; }
+      to { transform: translateX(100%); opacity: 0; }
+    }
+  `;
+  document.head.appendChild(style);
+  
+  document.body.appendChild(toast);
+  
+  // Remove toast after 3 seconds
+  setTimeout(() => {
+    toast.style.animation = 'slideOut 0.3s ease forwards';
+    setTimeout(() => {
+      document.body.removeChild(toast);
+      document.head.removeChild(style);
+    }, 300);
+  }, 3000);
+}
+
+// Download with progress indicator
+function downloadCVWithProgress() {
+  const cvUrl = 'assest/Imesh_Rathnayake_ML_Resume.pdf';
+  
+  // Show loading modal
+  showLoadingModal();
+  
+  // Create download link
+  const link = document.createElement('a');
+  link.href = cvUrl;
+  link.download = 'Imesh_Rathnayake_ML_Engineer_CV.pdf';
+  
+  // Add click event
+  link.onclick = function(e) {
+    // Simulate download delay
+    setTimeout(() => {
+      hideLoadingModal();
+      showDownloadSuccess();
+    }, 1500);
+  };
+  
+  // Trigger download
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+
+function showLoadingModal() {
+  const modal = document.createElement('div');
+  modal.id = 'downloadModal';
+  modal.innerHTML = `
+    <div class="download-modal-content">
+      <div class="download-spinner">
+        <i class="fas fa-file-download"></i>
+      </div>
+      <h3>Preparing your download...</h3>
+      <p>Please wait while we prepare your CV.</p>
+      <div class="progress-bar">
+        <div class="progress-fill"></div>
+      </div>
+    </div>
+  `;
+  
+  modal.style.cssText = `
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+  `;
+  
+  document.body.appendChild(modal);
+}
+
+function hideLoadingModal() {
+  const modal = document.getElementById('downloadModal');
+  if (modal) {
+    modal.style.opacity = '0';
+    setTimeout(() => {
+      document.body.removeChild(modal);
+    }, 300);
+  }
+}
